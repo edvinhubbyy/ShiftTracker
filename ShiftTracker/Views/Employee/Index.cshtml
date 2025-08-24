@@ -1,0 +1,34 @@
+﻿@model IEnumerable<ShiftTracker.ViewModels.Employees.EmployeeViewModel>
+@{
+    ViewData["Title"] = "Employees";
+}
+
+<h2>Employees</h2>
+
+
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Position</th>
+        <th>Role</th>
+        <th>Card ID</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var emp in Model)
+    {
+        <tr>
+            <td>@emp.Name</td>
+            <td>@emp.PositionName</td>
+            <td>@emp.RoleName</td>
+            <td>@emp.CardId</td>
+            <td>@emp.PhoneNumber</td>
+            <td>@emp.Email</td>
+        </tr>
+    }
+    </tbody>
+</table>

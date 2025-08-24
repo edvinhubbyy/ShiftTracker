@@ -1,0 +1,34 @@
+﻿@model ShiftTracker.Data.Models.Employees
+
+<h2>Manage Shift for @Model.Name</h2>
+
+<div>
+    <button class="btn btn-success" onclick="startShift('@Model.Id')">Start Shift</button>
+    <button class="btn btn-danger" onclick="endShift('@Model.Id')">End Shift</button>
+</div>
+
+<div>
+    <button class="btn btn-warning" onclick="startBreak('@Model.Id')">Start Break</button>
+    <button class="btn btn-secondary" onclick="endBreak('@Model.Id')">End Break</button>
+</div>
+
+@section Scripts{
+    <script>
+        async function startShift(empId) {
+            await fetch('/Shifts/StartShift?employeeId=' + empId, { method: 'POST' });
+            alert('Shift started!');
+        }
+        async function endShift(empId) {
+            await fetch('/Shifts/EndShift?shiftId=' + empId, { method: 'POST' });
+            alert('Shift ended!');
+        }
+        async function startBreak(shiftId) {
+            await fetch('/Shifts/StartBreak?shiftId=' + shiftId, { method: 'POST' });
+            alert('Break started!');
+        }
+        async function endBreak(breakId) {
+            await fetch('/Shifts/EndBreak?breakId=' + breakId, { method: 'POST' });
+            alert('Break ended!');
+        }
+    </script>
+}

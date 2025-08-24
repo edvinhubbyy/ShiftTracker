@@ -1,0 +1,135 @@
+﻿@model ShiftTracker.ViewModels.Employees.EmployeeShiftViewModel
+
+@{
+    ViewData["Title"] = "Start / Stop Shift";
+}
+
+<div class="container py-4">
+    <h2 class="mb-2">Welcome, <strong>@Model.EmployeeName</strong>!</h2>
+
+    <!-- Download PDF Button -->
+    <form asp-controller="Employee" asp-action="DownloadEmployeePdf" method="post" class="mb-4">
+        <input type="hidden" name="employeeId" value="@Model.EmployeeId" />
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-download"></i> Download Your PDF
+        </button>
+    </form>
+
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row mb-5">
+        <div class="col-md-6 mb-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    @if (Model.CurrentShift == null)
+                    {
+                        <form asp-action="StartShift" method="post">
+                            <input type="hidden" name="employeeId" value="@Model.EmployeeId" />
+                            <button type="submit" class="btn btn-lg btn-success w-100">
+                                <i class="bi bi-play-circle-fill"></i> Start Shift
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <h5 class="card-title">Shift started at:</h5>
+                        <p class="card-text">@Model.CurrentShift.CheckInTime.ToString("f")</p>
+                        <form asp-action="EndShift" method="post">
+                            <input type="hidden" name="employeeId" value="@Model.EmployeeId" />
+                            <button type="submit" class="btn btn-lg btn-danger w-100">
+                                <i class="bi bi-stop-circle-fill"></i> End Shift
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (Model.CurrentShift != null)
+        {
+            <div class="col-md-6 mb-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        @{
+                            var activeBreak = Model.CurrentShift.Breaks?.FirstOrDefault(b => b.EndTime == null);
+                        }
+
+                        @if (activeBreak == null)
+                        {
+                            <form asp-action="StartBreak" method="post">
+                                <input type="hidden" name="shiftId" value="@Model.CurrentShift.Id" />
+                                <button type="submit" class="btn btn-lg btn-warning w-100">
+                                    <i class="bi bi-pause-circle-fill"></i> Start Break
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <p class="mb-2">Break started at:</p>
+                            <h5>@activeBreak.StartTime.ToString("t")</h5>
+                            <form asp-action="EndBreak" method="post">
+                                <input type="hidden" name="breakId" value="@activeBreak.Id" />
+                                <button type="submit" class="btn btn-lg btn-secondary w-100">
+                                    <i class="bi bi-play-circle-fill"></i> End Break
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <h3>Shift History</h3>
+    @if (Model.ShiftHistory == null || !Model.ShiftHistory.Any())
+    {
+        <p class="text-muted">No shifts yet.</p>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var shift in Model.ShiftHistory)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">Shift</h6>
+                            <p><strong>Check-In:</strong> @shift.CheckInTime.ToString("g")</p>
+                            <p><strong>Check-Out:</strong> @(shift.CheckOutTime?.ToString("g") ?? "Ongoing")</p>
+                            <hr />
+                            <h6 class="card-subtitle mb-2 text-muted">Breaks</h6>
+                            @if (shift.Breaks != null && shift.Breaks.Any())
+                            {
+                                <ul class="list-unstyled mb-0">
+                                    @foreach (var br in shift.Breaks)
+                                    {
+                                        <li>@br.StartTime.ToString("t") - @(br.EndTime?.ToString("t") ?? "Ongoing")</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No breaks</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

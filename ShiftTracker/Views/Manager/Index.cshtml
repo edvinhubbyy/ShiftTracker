@@ -1,0 +1,103 @@
+﻿@model IEnumerable<ShiftTracker.ViewModels.Employees.EmployeeViewModel>
+@{
+    ViewData["Title"] = "Manage Employees";
+}
+
+<h2>Manage Employees</h2>
+
+<div class="mb-3 d-flex justify-content-between">
+    <a asp-controller="Manager" asp-action="Create" class="btn btn-success">Add Employee</a>
+    <a asp-controller="Manager" asp-action="Index" class="btn btn-primary">All Employees</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var emp in Model)
+        {
+            <tr>
+                <td>@emp.Name</td>
+                <td>@emp.PositionName</td>
+                <td>@emp.RoleName</td>
+                <td>
+                    <a asp-controller="Manager" asp-action="Edit" asp-route-id="@emp.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <form asp-controller="Employee" asp-action="Delete" asp-route-id="@emp.Id" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</button>
+                    </form>
+                    <button class="btn btn-primary btn-sm" onclick="openAdjustShiftModal('@emp.Id')">Adjust Shift</button>
+                    <button class="btn btn-info btn-sm" onclick="resetPin('@emp.Id')">Reset PIN</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Adjust Shift Modal -->
+<div class="modal fade" id="adjustShiftModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Adjust Shift</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modalEmpId" />
+                <div class="mb-3">
+                    <label>Check-In Time</label>
+                    <input type="datetime-local" id="checkInTime" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label>Check-Out Time</label>
+                    <input type="datetime-local" id="checkOutTime" class="form-control" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="submitAdjustShift()">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openAdjustShiftModal(empId) {
+            document.getElementById('modalEmpId').value = empId;
+            var modal = new bootstrap.Modal(document.getElementById('adjustShiftModal'));
+            modal.show();
+        }
+
+        function submitAdjustShift() {
+            var empId = document.getElementById('modalEmpId').value;
+            var checkIn = document.getElementById('checkInTime').value;
+            var checkOut = document.getElementById('checkOutTime').value;
+
+            fetch(`/Manager/AdjustShift`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ employeeId: empId, checkInTime: checkIn, checkOutTime: checkOut })
+            })
+            .then(res => res.ok ? alert('Shift adjusted!') : alert('Error adjusting shift.'))
+            .finally(() => bootstrap.Modal.getInstance(document.getElementById('adjustShiftModal')).hide());
+        }
+
+        function resetPin(empId) {
+            var newPin = prompt('Enter new PIN');
+            if (!newPin) return;
+
+            fetch(`/Manager/ResetPin`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ employeeId: empId, pin: newPin })
+            })
+            .then(res => res.ok ? alert('PIN reset!') : alert('Error resetting PIN.'));
+        }
+    </script>
+}

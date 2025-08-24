@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ShiftTracker.ViewModels.Employees.EmployeeViewModel>
+@{
+    ViewData["Title"] = "Manager Dashboard";
+}
+
+<h2>Manager Dashboard</h2>
+
+<div class="mb-3 d-flex justify-content-between">
+    <a asp-action="Create" class="btn btn-success">Add Employee</a>
+    <a asp-action="Index" class="btn btn-primary">All Employees</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Position</th>
+        <th>Role</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var emp in Model)
+    {
+        <tr>
+            <td>@emp.Name</td>
+            <td>@emp.PositionName</td>
+            <td>@emp.RoleName</td>
+            <td>@emp.Email</td>
+            <td>@emp.PhoneNumber</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@emp.Id" class="btn btn-warning btn-sm">Edit</a>
+                <form asp-action="Delete" asp-route-id="@emp.Id" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

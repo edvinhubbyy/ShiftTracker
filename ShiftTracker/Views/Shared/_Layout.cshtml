@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ShiftTracker</title>
+    
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ShiftTracker.styles.css" asp-append-version="true" />
+
+    <style>
+        body {
+            padding-top: 56px;
+            background-color: #f4f6f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 56px;
+            left: 0;
+            bottom: 0;
+            width: 220px;
+            padding: 20px;
+            background-color: #343a40;
+            color: #fff;
+        }
+
+            .sidebar h5 {
+                color: #fff;
+                margin-bottom: 20px;
+            }
+
+            .sidebar a {
+                display: block;
+                margin-bottom: 12px;
+                color: #adb5bd;
+                text-decoration: none;
+                padding: 6px 12px;
+                border-radius: 4px;
+                transition: background-color 0.2s, color 0.2s;
+            }
+
+                .sidebar a:hover, .sidebar a.active {
+                    background-color: #495057;
+                    color: #fff;
+                    text-decoration: none;
+                }
+
+        .content {
+            margin-left: 240px;
+            padding: 30px 20px;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: #fff !important;
+        }
+
+        @@media (max-width: 768px) {
+            .sidebar
+
+        {
+            position: relative;
+            width: 100%;
+            height: auto;
+            padding: 10px;
+        }
+
+        .content {
+            margin-left: 0;
+        }
+
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">ShiftTracker</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="navbar-text text-light me-3">
+                            @User.Identity.Name
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <form method="post" asp-controller="Auth" asp-action="Logout">
+                            <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h5>Navigation</h5>
+        <a asp-controller="Employee" asp-action="StartStopShift">Employees</a>
+
+        @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+        {
+            <a asp-controller="Manager" asp-action="Dashboard">Dashboard</a>
+        }
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="Admin" asp-action="Index">Admin</a>
+        }
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

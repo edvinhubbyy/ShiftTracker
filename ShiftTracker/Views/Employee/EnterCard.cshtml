@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Enter Card / PIN";
+}
+
+<h2>Enter Card / PIN</h2>
+
+<form asp-action="EnterCard" method="post">
+    <div class="mb-3">
+        <label>Card ID (Scan or Manual)</label>
+        <input type="text" name="cardId" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Name</label>
+        <input type="text" name="name" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>PIN</label>
+        <input type="password" name="pin" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-success">Register</button>
+</form>

@@ -1,0 +1,45 @@
+﻿@model ShiftTracker.ViewModels.Accounts.CardLoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+    <div class="card p-5 shadow-lg" style="width:400px;">
+        <h3 class="mb-4 text-center">Scan or Enter CardID</h3>
+
+        <div id="reader" style="width:100%; height:300px;" class="mb-3"></div>
+
+        <button id="startScannerBtn" class="btn btn-warning w-100 mb-3">Start Scanner</button>
+
+        <form asp-controller="Auth" asp-action="Authenticate" method="post" id="cardForm">
+            <div class="mb-3">
+                <input type="text" class="form-control form-control-lg" name="cardId" placeholder="Scan or type card ID" required autofocus />
+            </div>
+            <button type="submit" class="btn btn-primary w-100 btn-lg">Login</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+    let html5QrcodeScanner;
+
+    document.getElementById("startScannerBtn").addEventListener("click", () => {
+        html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 10, qrbox: 250 });
+
+        html5QrcodeScanner.render(
+            (decodedText) => {
+                document.querySelector('input[name="cardId"]').value = decodedText;
+                document.getElementById('cardForm').submit();
+            },
+            (error) => {
+                console.warn(`QR scan failed: ${error}`);
+            }
+        );
+
+        // Hide the start button after clicked
+        document.getElementById("startScannerBtn").style.display = "none";
+    });
+</script>
