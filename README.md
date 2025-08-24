@@ -19,8 +19,6 @@ ShiftTracker is a modern, full-stack web application designed to streamline empl
 ![Dashboard](images/Dashboard.png)  
 *Employee Dashboard*
 
-> Replace `link-to-...` with actual image URLs or paths.
-
 ---
 
 ## 🛠️ Technologies Used
