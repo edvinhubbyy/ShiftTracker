@@ -14,6 +14,21 @@ ShiftTracker is a modern, full-stack web application designed to streamline empl
 
 ---
 
+## 📸 Screenshots
+
+![Dashboard]([https://prnt.sc/IRVaUlxL1VQi])  
+*Employee Dashboard*
+
+![Shift History](link-to-shift-history-screenshot)  
+*Shift History View*
+
+![PDF Download](link-to-pdf-download-screenshot)  
+*Download PDF Summary*
+
+> Replace `link-to-...` with actual image URLs or paths.
+
+---
+
 ## 🛠️ Technologies Used
 
 - **Backend**: ASP.NET Core MVC, Entity Framework Core
